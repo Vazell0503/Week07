@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatty</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .chat-display {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message-box {
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .sender-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .msg-left {
+            background-color: #e0e0e0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .msg-right {
+            background-color: #d1f0f0;
+            text-align: right;
+            border-top: 1px solid #b2d8d8;
+            border-bottom: 1px solid #b2d8d8;
+        }
+        .input-section {
+            display: flex;
+            border-top: 1px solid #ccc;
+            padding: 20px;
+            gap: 20px;
+        }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .input-group label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .input-group textarea {
+            resize: none;
+            height: 70px;
+        }
+        .btn-send {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        .btn-send:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Chatty</div>
+    <div class="chat-display" id="chatArea">
+    </div>
+    <div class="input-section">
+        <div class="input-group">
+            <label>Name</label>
+            <input type="text" id="leftName" placeholder="Masukkan nama">
+            
+            <label>Message</label>
+            <textarea id="leftMessage" placeholder="Ketik pesan..."></textarea>
+            
+            <button class="btn-send" id="btnSendLeft">Send</button>
+        </div>
+        <div class="input-group">
+            <label>Name</label>
+            <input type="text" value="Me" readonly style="color: #666;">
+            
+            <label>Message</label>
+            <textarea id="rightMessage" placeholder="Ketik pesan..."></textarea>
+            
+            <button class="btn-send" id="btnSendRight">Send</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function sendLeftMessage() {
+                let name = $('#leftName').val(); 
+                let msg = $('#leftMessage').val();
+                
+                if (name.trim() !== '' && msg.trim() !== '') {
+                    let htmlElement = `<div class="message-box msg-left"><div class="sender-name">${name}</div><div>${msg}</div></div>`;                    
+                    $('#chatArea').append(htmlElement);
+                    $('#leftMessage').val(''); 
+                    scrollToBottom();
+                }
+            }
+            function sendRightMessage() {
+                let msg = $('#rightMessage').val();
+                
+                if (msg.trim() !== '') {
+                    let htmlElement = `<div class="message-box msg-right"><div class="sender-name">Me</div><div>${msg}</div></div>`;
+                    $('#chatArea').append(htmlElement);
+                    $('#rightMessage').val('');
+                    scrollToBottom();
+                }
+            }
+
+            function scrollToBottom() {
+                let chatArea = $('#chatArea');
+                chatArea.scrollTop(chatArea.prop("scrollHeight"));
+            }
+            $('#btnSendLeft').click(function() {
+                sendLeftMessage();
+            });
+
+            $('#btnSendRight').click(function() {
+                sendRightMessage();
+            });
+            $('#leftMessage').keypress(function(event) {
+                if (event.which == 13 && !event.shiftKey) {
+                    event.preventDefault();
+                    sendLeftMessage();
+                }
+            });
+
+            $('#rightMessage').keypress(function(event) {
+                if (event.which == 13 && !event.shiftKey) {
+                    event.preventDefault();
+                    sendRightMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
